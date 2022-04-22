@@ -25,15 +25,21 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
 
-      // belongs to many category
-      product.belongsToMany(models.category, {
-        as: "categories",
-        through: {
-          model: "product_category",
-          as: "bridge",
+      product.belongsTo(models.profile, {
+        as: "images",
+        foreignKey: {
+          name: "idUser",
         },
-        foreignKey: "idProduct",
       });
+
+      // product.belongsToMany(models.category, {
+      //   as: "categories",
+      //   through: {
+      //     model: "product_category",
+      //     as: "bridge",
+      //   },
+      //   foreignKey: "idProduct",
+      // });
     }
   }
   product.init({

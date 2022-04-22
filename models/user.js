@@ -12,6 +12,13 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       //hasMany to product model
       //hasMany to product model
+      user.hasOne(models.profile, {
+        as: "profile",
+        foreignKey: {
+          name: "idUser",
+        },
+      });
+
       user.hasMany(models.product, {
         as: "products",
         foreignKey: {
