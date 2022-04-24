@@ -31,11 +31,7 @@ exports.addTransaction = async (req, res) => {
 
 exports.getTransaction = async (req, res) => {
     try {
-
         let data = await transaction.findAll({
-            attributes: {
-                exclude: ["createdAt", "updatedAt"],
-            },
             include: [
                 {
                     model: product,
@@ -59,6 +55,9 @@ exports.getTransaction = async (req, res) => {
                     },
                 },
             ],
+            attributes: {
+                exclude: ["createdAt", "updatedAt"],
+            },
         });
 
         res.send({
