@@ -2,12 +2,15 @@ const { category, product_category } = require("../../models");
 
 exports.getCategory = async (req, res) => {
     try {
-        let data = await category.findAll({
+        const categories = await category.findAll({
+            attributes: {
+                exclude: ["createdAt", "updatedAt", "password"],
+            },
         });
 
         res.send({
             status: "success...",
-            data,
+            categories,
         });
     } catch (error) {
         console.log(error);
@@ -20,13 +23,13 @@ exports.getCategory = async (req, res) => {
 
 exports.addCategory = async (req, res) => {
     try {
-        const newCategory = await category.create(req.body)
+        const newCategory = await category.create(req.body);
 
         res.send({
             status: 'success',
             data: {
                 id: newCategory.id,
-                name: newCategory.name
+                name: newCategory.nameCategory
             },
         });
     } catch (error) {
@@ -65,6 +68,7 @@ exports.updateCategory = async (req, res) => {
     try {
         const { id } = req.params;
         const data = req.body
+        console.log(data);
 
         await category.update(data, {
             where: {

@@ -1,4 +1,4 @@
-const { product, user } = require("../../models");
+const { product, user, product_category, category } = require("../../models");
 
 exports.getProduct = async (req, res) => {
     try {
@@ -11,6 +11,17 @@ exports.getProduct = async (req, res) => {
                         exclude: ["createdAt", "updatedAt", "password"],
                     },
                 },
+                // {
+                //     model: category,
+                //     as: "categories",
+                //     through: {
+                //         model: product_category,
+                //         as: "bridge",
+                //     },
+                //     attributes: {
+                //         exclude: ["createdAt", "updatedAt"],
+                //     },
+                // },
             ],
             attributes: {
                 exclude: ["createdAt", "updatedAt", "idUser"],
@@ -44,13 +55,14 @@ exports.addProduct = async (req, res) => {
     try {
         const data = req.body;
 
-        // code here
         let newProduct = await product.create({
             ...data,
             image: req.file.filename,
-            idUser: req.user.id
+            idUser: req.user.id,
+            attributes: {
+                exclude: ["createdAt", "updatedAt"],
+            },
         })
-
 
         newProduct = JSON.parse(JSON.stringify(newProduct))
 
@@ -82,23 +94,21 @@ exports.getDetailProduct = async (req, res) => {
     try {
         const { id } = req.params;
 
-        let data = await product.findAll({
-            where: {
-                id
-            },
+        const data = await product.findOne({
+            where: { id },
+            include: [
+                {
+                    model: user,
+                    as: "user",
+                    attributes: {
+                        exclude: ["createdAt", "updatedAt", "password"],
+                    },
+                },
+            ],
             attributes: {
-                exclude: ["password", "idUser", "createdAt", "updatedAt"],
+                exclude: ["createdAt", "updatedAt", "idUser"],
             },
         });
-
-        data = JSON.parse(JSON.stringify(data))
-
-        data = data.map((item) => {
-            return {
-                ...item,
-                image: process.env.FILE_PATH + item.image
-            }
-        })
         res.send({
             status: "success",
             data: data,
