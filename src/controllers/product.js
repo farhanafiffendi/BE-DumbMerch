@@ -11,17 +11,18 @@ exports.getProduct = async (req, res) => {
                         exclude: ["createdAt", "updatedAt", "password"],
                     },
                 },
-                // {
-                //     model: category,
-                //     as: "categories",
-                //     through: {
-                //         model: product_category,
-                //         as: "bridge",
-                //     },
-                //     attributes: {
-                //         exclude: ["createdAt", "updatedAt"],
-                //     },
-                // },
+                {
+                    model: category,
+                    as: "categories",
+                    through: {
+                        model: product_category,
+                        as: "bridge",
+                        attributes: [],
+                    },
+                    attributes: {
+                        exclude: ["createdAt", "updatedAt"],
+                    },
+                },
             ],
             attributes: {
                 exclude: ["createdAt", "updatedAt", "idUser"],
@@ -33,7 +34,7 @@ exports.getProduct = async (req, res) => {
         data = data.map((item) => {
             return {
                 ...item,
-                image: process.env.FILE_PATH + item.image
+                image: process.env.FILE_PATH + item.image,
             }
         })
 
@@ -104,6 +105,18 @@ exports.getDetailProduct = async (req, res) => {
                         exclude: ["createdAt", "updatedAt", "password"],
                     },
                 },
+                {
+                    model: category,
+                    as: "categories",
+                    through: {
+                        model: product_category,
+                        as: "bridge",
+                        attributes: [],
+                    },
+                    attributes: {
+                        exclude: ["createdAt", "updatedAt"],
+                    },
+                },
             ],
             attributes: {
                 exclude: ["createdAt", "updatedAt", "idUser"],
@@ -142,13 +155,6 @@ exports.updateProduct = async (req, res) => {
             },
 
         });
-
-        // editProduct = JSON.parse(JSON.stringify(editProduct))
-
-        // editProduct = {
-        //     ...editProduct,
-        //     image: process.env.FILE_PATH + editProduct.image
-        // }
 
         res.send({
             status: "success",

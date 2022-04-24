@@ -32,14 +32,14 @@ module.exports = (sequelize, DataTypes) => {
         },
       });
 
-      // product.belongsToMany(models.category, {
-      //   as: "categories",
-      //   through: {
-      //     model: "product_category",
-      //     as: "bridge",
-      //   },
-      //   foreignKey: "idProduct",
-      // });
+      product.belongsToMany(models.category, {
+        as: "categories",
+        through: {
+          model: "product_category",
+          as: "bridge",
+        },
+        foreignKey: "idProduct",
+      });
     }
   }
   product.init({
