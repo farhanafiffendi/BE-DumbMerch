@@ -112,7 +112,7 @@ exports.deleteCategory = async (req, res) => {
 
         res.send({
             status: "success",
-            message: `Delete user id: ${id} finished`,
+            message: `Delete category id: ${id} finished`,
             data: {
                 id,
             }

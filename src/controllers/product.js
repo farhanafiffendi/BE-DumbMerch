@@ -183,7 +183,7 @@ exports.deleteProduct = async (req, res) => {
 
         res.send({
             status: "success",
-            message: `Delete user id: ${id} finished`,
+            message: `Delete product id: ${id} finished`,
         });
     } catch (error) {
         console.log(error);
