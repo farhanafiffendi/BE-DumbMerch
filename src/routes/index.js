@@ -8,7 +8,7 @@ const { getProduct, addProduct, getDetailProduct, updateProduct, deleteProduct }
 const { getCategory, addCategory, getDetailCategory, updateCategory, deleteCategory } = require('../controllers/category')
 const { addTransaction, getTransaction } = require('../controllers/transaction')
 
-const { register, login } = require('../controllers/auth')
+const { register, login, checkLogin } = require('../controllers/auth')
 
 // Middleware
 const { auth } = require('../middlewares/auth')
@@ -40,5 +40,7 @@ router.get('/transactions', auth, getTransaction)
 
 router.post('/register', register)
 router.post('/login', login)
+router.get('/check', auth, checkLogin)
+
 
 module.exports = router

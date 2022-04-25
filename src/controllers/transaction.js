@@ -7,7 +7,7 @@ exports.addTransaction = async (req, res) => {
         // code here
         const newTransaction = await transaction.create({
             ...data,
-            idBuyer: req.user.id,
+            idBuyer: req.user.id, //dari token
             attributes: {
                 exclude: ["createdAt", "updatedAt"],
             },
@@ -31,7 +31,12 @@ exports.addTransaction = async (req, res) => {
 
 exports.getTransaction = async (req, res) => {
     try {
+
+        const idBuyer = req.user.id
         let data = await transaction.findAll({
+            where: {
+                idBuyer,
+            },
             include: [
                 {
                     model: product,
@@ -58,6 +63,18 @@ exports.getTransaction = async (req, res) => {
             attributes: {
                 exclude: ["createdAt", "updatedAt"],
             },
+        });
+
+        data = JSON.parse(JSON.stringify(data));
+
+        data = data.map((item) => {
+            return {
+                ...item,
+                product: {
+                    ...item.product,
+                    image: process.env.FILE_PATH + item.product.image,
+                },
+            };
         });
 
         res.send({

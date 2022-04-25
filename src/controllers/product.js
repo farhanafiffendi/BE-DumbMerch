@@ -36,7 +36,7 @@ exports.getProduct = async (req, res) => {
                 ...item,
                 image: process.env.FILE_PATH + item.image,
             }
-        })
+        });
 
 
         res.send({
@@ -95,7 +95,7 @@ exports.getDetailProduct = async (req, res) => {
     try {
         const { id } = req.params;
 
-        const data = await product.findOne({
+        let data = await product.findOne({
             where: { id },
             include: [
                 {
@@ -122,9 +122,17 @@ exports.getDetailProduct = async (req, res) => {
                 exclude: ["createdAt", "updatedAt", "idUser"],
             },
         });
+
+        data = JSON.parse(JSON.stringify(data))
+
+        data = {
+            ...data,
+            image: process.env.FILE_PATH + data.image,
+        }
+
         res.send({
             status: "success",
-            data: data,
+            data,
         });
     } catch (error) {
         console.log(error);
@@ -138,28 +146,30 @@ exports.getDetailProduct = async (req, res) => {
 exports.updateProduct = async (req, res) => {
     try {
         const { id } = req.params;
-        const data = {
-            name: req.body.name,
-            desc: req.body.desc,
-            image: req.file.filename,
-            price: req.body.price,
-            qty: req.body.qty,
-        };
+        const data = req.body;
 
-        await product.update(data, {
-            where: {
-                id
-            },
-            attributes: {
-                exclude: ["password", "idUser", "createdAt", "updatedAt"],
+        await product.update(
+            {
+                ...data,
+                image: req.file.filename,
+                idUser: req.user.id, //dari token
             },
 
-        });
+            {
+                where: { id },
+            },
+        );
 
         res.send({
             status: "success",
+            message: `Update product id: ${id} finished`,
             data: {
-                data
+                image: req.file.filename,
+                desc: req.body.desc,
+                name: req.body.name,
+                price: req.body.price,
+                idUser: req.user.id,
+                qty: req.body.qty,
             }
         });
     } catch (error) {

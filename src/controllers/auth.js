@@ -42,7 +42,6 @@ exports.register = async (req, res) => {
                 name: newUser.name,
                 email: newUser.email,
                 // code here
-                token
             },
         });
     } catch (error) {
@@ -79,14 +78,16 @@ exports.login = async (req, res) => {
             },
         });
 
+        //pengecekan email
         if (!userExist) {
             return res.status(400).send({
                 status: 'failed',
                 message: 'Email or password incorrect'
             })
         }
-        const isValid = await bcrypt.compare(req.body.password, userExist.password);
 
+        const isValid = await bcrypt.compare(req.body.password, userExist.password);
+        //pengecekan password
         if (!isValid) {
             return res.status(400).send({
                 status: "failed",
@@ -113,3 +114,41 @@ exports.login = async (req, res) => {
         });
     }
 };
+
+exports.checkLogin = async (req, res) => {
+    try {
+        const id = req.user.id;
+
+        const dataUser = await user.findOne({
+            where: { id },
+            attributes: {
+                exclude: ["password", "createdAt", "updatedAt"],
+            },
+        });
+
+        if (!dataUser) {
+            return res.status(404).send({
+                status: "failed",
+            });
+        }
+
+        res.send({
+            status: "success",
+            data: {
+                user: {
+                    id: dataUser.id,
+                    name: dataUser.name,
+                    email: dataUser.email,
+                    status: dataUser.status,
+                }
+            }
+        })
+
+    } catch (error) {
+        console.log(error);
+        res.status({
+            statu: 'failed',
+            message: 'server error'
+        })
+    }
+}
