@@ -25,6 +25,20 @@ exports.register = async (req, res) => {
         });
 
     try {
+
+        const checkEmail = await user.findOne({
+            where: {
+                email: req.body.email,
+            }
+        })
+
+        if (checkEmail) {
+            return res.status(401).send({
+                status: "failed",
+                message: "Email Already Exist!!!",
+            });
+        }
+
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(req.body.password, salt);
         const newUser = await user.create({
@@ -41,6 +55,7 @@ exports.register = async (req, res) => {
             data: {
                 name: newUser.name,
                 email: newUser.email,
+                token
                 // code here
             },
         });
